@@ -23,9 +23,9 @@
 #' @param exact Show only tags that exactly match `version`,
 #'  or all tags that have it as a substring?
 #' @return data frame with columns for package name, expected version(s),
-#'  and installed version.
-#'  If the `sessioninfo` package is installed, a fourth column reports where
-#'  each package was installed from: local, github, CRAN, etc.
+#'  installed version, and Git hash (if known).
+#'  If the `sessioninfo` package is installed, an additional column reports
+#'  where each package was installed from: local, github, CRAN, etc.
 #'
 #' @examples
 #' pecan_version()
@@ -46,7 +46,7 @@ pecan_version <- function(version = max(PEcAn.all::pecan_releases$version),
     )
     version <- unique(unlist(version))
   }
-  cols_to_return <- c("package", version, "installed")
+  cols_to_return <- c("package", version, "installed", "build_hash")
 
 
   if (requireNamespace("sessioninfo", quietly = TRUE)) {
@@ -55,23 +55,24 @@ pecan_version <- function(version = max(PEcAn.all::pecan_releases$version),
     all_pkgs <- sessioninfo::package_info(pkgs = "installed", dependencies = FALSE)
     our_pkgs <- all_pkgs[grepl("PEcAn", all_pkgs$package),]
 
+    # Why do we need this when `pkgs = "installed"` usually shows loaded too?
+    # Because there are times a package is loaded but not installed
+    # (e.g. notably during R CMD check)
     all_loaded <- sessioninfo::package_info(pkgs = "loaded", dependencies = FALSE)
     our_loaded <- all_loaded[grepl("PEcAn", all_loaded$package),]
-
-    unloaded <- our_pkgs[!our_pkgs$package %in% our_loaded$package,]
-    our_pkgs <- rbind(our_loaded, unloaded)
-    our_pkgs <- our_pkgs[order(our_pkgs$package),]
-
 
     # TODO: consider using package_info's callouts of packages where loaded and
     #   installed versions mismatch -- it's a more elegant version of what we
     #   were trying for with the "multiple rows for packages with multiple
     #   versions found" behavior.
-    our_pkgs$installed <- ifelse(
-      test = is.na(our_pkgs$loadedversion),
-      yes = our_pkgs$ondiskversion,
-      no = our_pkgs$loadedversion)
-    our_pkgs <- our_pkgs[, c("package", "installed", "source")]
+    our_pkgs <- merge(
+      x = our_pkgs[, c("package", "ondiskversion", "source")],
+      y = our_loaded[, c("package", "loadedversion", "source")],
+      by.x = c("package", "ondiskversion", "source"),
+      by.y = c("package", "loadedversion", "source"),
+      all = TRUE,
+      sort = TRUE)
+    colnames(our_pkgs) <- c("package", "installed", "source")
     our_pkgs$installed <- package_version(our_pkgs$installed)
 
   } else {
@@ -89,17 +90,24 @@ pecan_version <- function(version = max(PEcAn.all::pecan_releases$version),
       package = names(our_loaded),
       installed = sapply(our_loaded, `[[`, "Version"))
     our_loaded$installed <- package_version(our_loaded$installed)
-    our_pkgs <- merge(our_pkgs, our_loaded, all = TRUE)
+    our_pkgs <- merge(our_pkgs, our_loaded, all = TRUE, sort = TRUE)
+    our_pkgs <- our_pkgs[!duplicated(our_pkgs),]
   }
 
+  want_hash <- !is.na(our_pkgs$installed)
+  our_pkgs$build_hash[want_hash] <- sapply(
+    our_pkgs$package[want_hash],
+    get_buildhash)
 
   res <- merge(
     x = our_pkgs,
     y = PEcAn.all::pecan_version_history,
     all = TRUE)
-  res <- res[, cols_to_return]
+  res <- drop_na_version_rows(res[, cols_to_return])
+  rownames(res) <- res$package
+  class(res) <- c("pecan_version_report", class(res))
 
-  drop_na_version_rows(res)
+  res
 }
 
 # Remove rows where all versions are missing
@@ -107,4 +115,47 @@ pecan_version <- function(version = max(PEcAn.all::pecan_releases$version),
 drop_na_version_rows <- function(df) {
   stopifnot(colnames(df)[[1]] == "package")
   df[rowSums(is.na(df[, -1])) < ncol(df[, -1]), ]
+}
+
+
+# Look up git revision, if recorded, from an installed PEcAn package
+get_buildhash <- function(pkg) {
+  # Set if pkg was installed from r-universe or via install_github()
+  desc_sha <- utils::packageDescription(pkg, fields = "RemoteSha")
+  if (!is.na(desc_sha)) {
+    return(substr(desc_sha, 1, 10))
+  }
+  # Set if PECAN_GIT_REV was set during install (includes `make install`)
+  get0(".build_hash", envir = asNamespace(pkg), ifnotfound = NA_character_)
+}
+
+
+# print method for version
+# (Just to help it display more compactly)
+#' @export
+print.pecan_version_report <- function(x, ...) {
+
+  dots <- list(...)
+  if (is.null(dots$row.names)) { dots$row.names <- FALSE }
+  if (is.null(dots$right)) { dots$right <- FALSE }
+
+  xx <- as.data.frame(x)
+  # only print hash for dev versions
+  # (typically x.y.z.9000, but we'll use anything with a 4th version component)
+  skip_hash <- is.na(xx$installed[,4]) | is.na(xx$build_hash)
+  xx$build_hash[skip_hash] <- ""
+  xx$build_hash <- sub(".{4}\\+mod$", "+mod", xx$build_hash)
+  xx$installed <- paste0(
+    xx$installed,
+    sub("(.+)", " (\\1)", xx$build_hash))
+  xx$build_hash <- NULL
+  if (!is.null(xx$source)) {
+    xx$source <- paste0(
+      strtrim(xx$source, 17),
+      ifelse(nchar(xx$source, type="width") <= 17, "", "..."))
+  }
+  dots$x <- xx
+  do.call("print", dots)
+
+  invisible(x)
 }

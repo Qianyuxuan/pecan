@@ -1,8 +1,7 @@
 Package: PEcAn.data.land
 Type: Package
 Title: PEcAn Functions Used for Ecological Forecasts and Reanalysis
-Version: 1.7.2.9000
-Date: 2021-10-04
+Version: 1.8.0.9000
 Authors@R: c(person("Mike", "Dietze", role = c("aut", "cre"),
                      email = "dietze@bu.edu"),
              person("David", "LeBauer", role = c("aut"),
@@ -26,7 +25,6 @@ Depends: R (>= 3.5.0)
 Imports:
     coda,
     curl,
-    datapack,
     dplyr,
     dplR,
     fs,
@@ -41,7 +39,6 @@ Imports:
     neonstore,
     swfscMisc,
     PEcAn.benchmark,
-    PEcAn.data.atmosphere,
     PEcAn.DB,
     PEcAn.logger,
     PEcAn.remote,
@@ -61,6 +58,7 @@ Imports:
     XML (>= 3.98-1.4)      
 Suggests:
     dataone,
+    datapack,
     getPass,
     glue,
     PEcAn.settings,
@@ -72,4 +70,4 @@ License: BSD_3_clause + file LICENSE
 Copyright: Authors
 LazyData: true
 Encoding: UTF-8
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2

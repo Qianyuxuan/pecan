@@ -1,12 +1,3 @@
-#-------------------------------------------------------------------------------
-# Copyright (c) 2012 University of Illinois, NCSA.
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the
-# University of Illinois/NCSA Open Source License
-# which accompanies this distribution, and is available at
-# http://opensource.ncsa.illinois.edu/license.html
-#-------------------------------------------------------------------------------
-
 #' Merge multiple NetCDF files into one
 #' 
 #' @param files \code{character}. List of filepaths, which should lead to NetCDF files.
@@ -86,8 +77,6 @@ sipnet2datetime <- function(sipnet_tval, base_year, base_month = 1,
 ##' Convert SIPNET output to netCDF
 ##'
 ##' Converts all output contained in a folder to netCDF.
-##' @name model2netcdf.SIPNET
-##' @title Function to convert SIPNET model output to standard netCDF format
 ##'
 ##' @param outdir Location of SIPNET model output
 ##' @param sitelat Latitude of the site
@@ -98,7 +87,7 @@ sipnet2datetime <- function(sipnet_tval, base_year, base_month = 1,
 ##' @param overwrite Flag for overwriting nc files or not
 ##' @param conflict Flag for dealing with conflicted nc files, if T we then will merge those, if F we will jump to the next.
 ##' @param prefix prefix to read the output files
-##' @param delete.raw Flag to remove sipnet.out files, FALSE = do not remove files TRUE = remove files
+##' @param delete.raw logical: remove sipnet.out files after converting?
 ##'
 ##' @export
 ##' @author Shawn Serbin, Michael Dietze

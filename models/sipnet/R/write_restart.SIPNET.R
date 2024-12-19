@@ -1,14 +1,8 @@
-#-------------------------------------------------------------------------------
-# Copyright (c) 2012 University of Illinois, NCSA.
-# All rights reserved. This program and the accompanying materials
-# are made available under the terms of the
-# University of Illinois/NCSA Open Source License
-# which accompanies this distribution, and is available at
-# http://opensource.ncsa.illinois.edu/license.html
-#-------------------------------------------------------------------------------
-
-##' @title write_restart.SIPNET
-##' @name  write_restart.SIPNET
+##' write_restart.SIPNET
+##'
+##' Write restart files for SIPNET.
+##' WARNING: Some variables produce illegal values < 0 and have been hardcoded to correct these values!!
+##'
 ##' @author Ann Raiho \email{araiho@@nd.edu}
 ##'
 ##' @param outdir output directory
@@ -21,10 +15,10 @@
 ##' @param new.params list of parameters to convert between different states 
 ##' @param inputs list of model inputs to use in write.configs.SIPNET
 ##' @param verbose decide if we want to print the outputs.
-##'
-##' @description Write restart files for SIPNET. WARNING: Some variables produce illegal values < 0 and have been hardcoded to correct these values!!
 ##' 
 ##' @return NONE
+##'
+##' @importFrom dplyr %>%
 ##' @export
 write_restart.SIPNET <- function(outdir, runid, start.time, stop.time, settings, new.state,
                                  RENAME = TRUE, new.params = FALSE, inputs, verbose = FALSE) {

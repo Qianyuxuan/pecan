@@ -1,11 +1,11 @@
 # this needs to be at the top, what version are we building
 ARG IMAGE_VERSION="latest"
+ARG PARENT_IMAGE="pecan/base"
 
 # ----------------------------------------------------------------------
 # compile bookdown to html
 # ----------------------------------------------------------------------
-FROM pecan/base:${IMAGE_VERSION} AS pecandocs
-MAINTAINER Rob Kooper <kooper@illinois.edu>
+FROM ${PARENT_IMAGE}:${IMAGE_VERSION} AS pecandocs
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends pandoc \
@@ -28,7 +28,11 @@ RUN make build
 # copy html pages to container
 # ----------------------------------------------------------------------
 FROM httpd
-MAINTAINER Rob Kooper <kooper@illinois.edu>
+
+# need curl for health checks
+RUN apt-get update \
+    && apt-get install -y curl \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY docker/docs/index.html /usr/local/apache2/htdocs/
 COPY --from=pecandocs /src/book_source/_book/ /usr/local/apache2/htdocs/docs/pecan/

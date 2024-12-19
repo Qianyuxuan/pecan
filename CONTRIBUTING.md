@@ -10,7 +10,7 @@ New functionality is typically directed toward modules to provide a slimmer PEcA
 Generally, new model should be added to the models folder and new modules should be added to the modules folder.
 Exceptions include code that is reused in many models or modules and wrapper functions that call specific implementations in models; these can be placed in the core packages.
 
-If you are unsure of whether your contribution should be implemented as a model, module or part of PEcAn Core, you may visit [Chat Room](https://join.slack.com/t/pecanproject/shared_invite/enQtMzkyODUyMjQyNTgzLWEzOTM1ZjhmYWUxNzYwYzkxMWVlODAyZWQwYjliYzA0MDA0MjE4YmMyOTFhMjYyMjYzN2FjODE4N2Y4YWFhZmQ) or ask on the pecan-develop mailing list for advice.
+If you are unsure of whether your contribution should be implemented as a model, module or part of PEcAn Core, you may join our [Slack Channel](https://join.slack.com/t/pecanproject/shared_invite/enQtMzkyODUyMjQyNTgzLWEzOTM1ZjhmYWUxNzYwYzkxMWVlODAyZWQwYjliYzA0MDA0MjE4YmMyOTFhMjYyMjYzN2FjODE4N2Y4YWFhZmQ).
 
 ## Creating Issues
 
@@ -45,7 +45,7 @@ Switch pecan to your fork
 git remote set-url origin https://github.com/<your username>/pecan.git
 ```
 
-Setup pecan to be able to fetch from the master/develop
+Setup pecan to be able to fetch from the main/develop
 
 ```bash
 git remote add upstream https://github.com/PecanProject/pecan.git
@@ -53,13 +53,13 @@ git remote add upstream https://github.com/PecanProject/pecan.git
 
 ## PEcAn Branches
 
-PEcAn uses two protected branches, the master branch and the develop branch. The master branch will match the official releases, but all work will be done on the develop branch. Make sure that you create branches from the develop branch. This should be the default branch in your git repository.
+PEcAn uses two protected branches, the main branch and the develop branch. The main branch will match the official releases, but all work will be done on the develop branch. Make sure that you create branches from the develop branch. This should be the default branch in your git repository.
 
 ## Adding Features
 
 When you add a new feature always create an issue first, this allows others to comment and give you tips. It will also help us keep track of what people are adding and with new releases helps us to write new release notes and give you credit for your work.
 
-Secondly always work in a  branch, never work on the master or develop branch. Keep your master and develop branch in sync with the master and develop of the official PEcAn repository. This makes the pull requests (you do want your work to be in the main branch right?) easier for us.
+Secondly always work in a  branch, never work on the main or develop branch. Keep your main and develop branch in sync with the main and develop of the official PEcAn repository. This makes the pull requests (you do want your work to be in the main branch right?) easier for us.
 
 Finally try to keep your branches focused on fixing/adding only one feature and try not fall in the trap of doing a lot of things in a  single branch. This will not only make it harder for us to process your pull request but makes it take longer before you can submit your pull request. Small pull requests are more likely to be looked at faster and pulled into the develop branch faster.
 
@@ -86,7 +86,16 @@ git checkout -b GH-issuenumber-title-of-issue
 
 ### Work and commit
 
-Do you work, and commit as you see fit.Make your commit messages helpful.
+Do you work, and commit as you see fit. Make your commit messages helpful.
+
+### Update other files (CITATION, NEWS, CHANGELOG)
+
+Your PR should include:
+
+- CITATION.cff: if you are making or have made a non-trivial contribution (please ask if unsure; our approach is inclusive), add your name to the author section.
+- NEWS.md: for each package
+- CHANGELOG.md: add changes to [Unreleased] section
+
 
 ### Push your changes up to GitHub
 
@@ -96,13 +105,18 @@ If this is the first time pushing to GitHub you will need to extended command, o
 git push -u origin GH-issuenumber-title-of-issue
 ```
 
+
 ### Pull Request
 
  When finished create a pull request from your branch to the main pecan repository.
 
+ When submitting a pull request, you retain authorship of the code you contribute. However, you are giving the PEcAn Project permission to distribute your contributions under either or both, at our discretion, of:
+  - The license listed at PR opening time for the code you are contributing to,
+  - and/or the BSD 3-clause license.
+
 ## Additional Resources
 
-- [Adding models to PEcAn](https://pecanproject.github.io/pecan-documentation/master/adding-an-ecosystem-model.html)
-- [PEcAn configuration files](https://pecanproject.github.io/pecan-documentation/master/pecan-xml-configuration.html)
-- [Development help](https://pecanproject.github.io/pecan-documentation/master/developer-guide.html)
-- [PEcAn Code of Conduct](https://pecanproject.github.io/pecan-documentation/master/contributor-covenant-code-of-conduct.html)
+- [Adding models to PEcAn](https://pecanproject.github.io/pecan-documentation/latest/adding-an-ecosystem-model.html)
+- [PEcAn configuration files](https://pecanproject.github.io/pecan-documentation/latest/pecan-xml-configuration.html)
+- [Development help](https://pecanproject.github.io/pecan-documentation/latest/developer-guide.html)
+- [PEcAn Code of Conduct](CODE_OF_CONDUCT.md)

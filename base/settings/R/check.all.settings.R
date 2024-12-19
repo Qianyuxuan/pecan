@@ -1,12 +1,3 @@
-##-----------------------------------------------------------------------------
-## Copyright (c) 2012 University of Illinois, NCSA.
-## All rights reserved. This program and the accompanying materials
-## are made available under the terms of the
-## University of Illinois/NCSA Open Source License
-## which accompanies this distribution, and is available at
-## http://opensource.ncsa.illinois.edu/license.html
-##-----------------------------------------------------------------------------
-
 #' check to see if inputs are specified - this should be part of the model code
 #' @title Check Inputs
 #' @param settings settings file
@@ -260,13 +251,11 @@ check.bety.version <- function(dbcon) {
   }
 
   # check if database is newer
-  last_migration_date <- lubridate::ymd_hms(utils::tail(versions, n = 1))
-  pecan_release_date <- lubridate::ymd(
-    utils::packageDescription("PEcAn.DB")$Date)
-  if (last_migration_date > pecan_release_date) {
+  unknown_migrations <- setdiff(versions, .known_bety_migrations)
+  if (any(unknown_migrations)) {
     PEcAn.logger::logger.warn(
-      "Last database migration", utils::tail(versions, n = 1),
-      "is more recent than this", pecan_release_date, "release of PEcAn.",
+      "Found database migration(s) not known by this release of PEcAn.settings:",
+      unknown_migrations,
       "This could result in PEcAn not working as expected.")
   }
 }
@@ -938,9 +927,10 @@ check.model.settings <- function(settings, dbcon = NULL) {
   return(settings)
 }
 
-#' @title Check Workflow Settings
+#' Check Workflow Settings
 #' @param settings settings file
-#' @export check.workflow.settings
+#' @param dbcon database connection
+#' @export
 check.workflow.settings <- function(settings, dbcon = NULL) {
   # check for workflow defaults
   fixoutdir <- FALSE
