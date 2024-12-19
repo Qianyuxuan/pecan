@@ -264,7 +264,17 @@ sclass <- function(sandfrac,clayfrac){
   #----- Define the percentage of sand, clay, and silt. ----------------------------------#
   sand <- 100. * sandfrac
   clay <- 100. * clayfrac
-  silt <- 100. - sand - clay
+  
+  # Prevent silt from being negative due to numerical precision issue
+  silt <- c()
+  for (i in seq_along(sand)) {
+    if (sand[i] + clay[i] >= 100.) {
+      silt[i] <- 0
+    } else {
+      silt[i] <- 100. - sand[i] - clay[i]
+     }
+  }
+
   #---------------------------------------------------------------------------------------#
   
   #---------------------------------------------------------------------------------------#

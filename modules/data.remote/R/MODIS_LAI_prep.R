@@ -38,9 +38,10 @@ MODIS_LAI_prep <- function(site_info, time_points, outdir = NULL, search_window 
   if(file.exists(file.path(outdir, "LAI.csv"))){
     PEcAn.logger::logger.info("Extracting previous LAI file!")
     Previous_CSV <- utils::read.csv(file.path(outdir, "LAI.csv"))
-    if (!is.null(sd_threshold)) {
-      PEcAn.logger::logger.info("filtering out records with high standard errors!")
-      Previous_CSV <- Previous_CSV[-which(Previous_CSV$sd >= sd_threshold),]
+    PEcAn.logger::logger.info("filtering out records with high standard errors!")
+    ind.rm <- which(Previous_CSV$sd >= sd_threshold)
+    if (length(ind.rm) > 0) {
+      Previous_CSV <- Previous_CSV[-ind.rm,]
     }
     LAI_Output <- matrix(NA, length(site_info$site_id), 2*length(time_points)+1) %>% 
       `colnames<-`(c("site_id", paste0(time_points, "_LAI"), paste0(time_points, "_SD"))) %>% as.data.frame()#we need: site_id, LAI, std, target time point.

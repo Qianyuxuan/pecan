@@ -207,7 +207,7 @@ model2netcdf.SIPNET <- function(outdir, sitelat, sitelon, start_date, end_date, 
      output[["Qle"]] <- (sub.sipnet.output$evapotranspiration * 10 * PEcAn.data.atmosphere::get.lv()) / timestep.s  # Qle W/m2
     }
     output[["Transp"]] <- (sub.sipnet.output$fluxestranspiration * 10) / timestep.s  # Transpiration kgW/m2/s
-    output[["SoilMoist"]] <- (sub.sipnet.output$soilWater * 10)  # Soil moisture kgW/m2
+    output[["SoilMoist"]] <- sub.sipnet.output$soilWater   # Soil moisture in cm
     output[["SoilMoistFrac"]] <- (sub.sipnet.output$soilWetnessFrac)  # Fractional soil wetness
     output[["SWE"]] <- (sub.sipnet.output$snow * 10)  # SWE
     output[["litter_carbon_content"]] <- sub.sipnet.output$litter * 0.001  ## litter kgC/m2
