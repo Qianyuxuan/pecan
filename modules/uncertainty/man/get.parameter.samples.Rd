@@ -23,10 +23,10 @@ get.parameter.samples(
 \item{posterior.files}{list of filenames to read from}
 
 \item{ens.sample.method}{one of "halton", "sobol", "torus", "lhc", "uniform"}
+
+\item{pfts}{the pfts node of the list of pecan settings}
 }
 \description{
-Convert priors / MCMC samples to chains that can be sampled for model parameters
-
 Convert priors / MCMC samples to chains that can be sampled for model parameters
 }
 \author{
